@@ -44,3 +44,7 @@ Run it from the repository's **Actions** tab with **Run workflow**. Download the
 your phone, enable installation from the browser/files app if Android asks, and open the APK.
 The workflow runs `cargo apk check`, builds optimized release APKs, and publishes SHA-256 files
 beside them.
+
+These CI APKs use a temporary per-run signing key so they can be installed directly. A future
+APK signed with a different key cannot update an installed CI APK; production releases should
+use a stable signing key stored in GitHub Actions secrets.

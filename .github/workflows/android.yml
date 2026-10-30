@@ -66,6 +66,24 @@ jobs:
       - name: Check Android package configuration
         run: cargo apk check -p effectcraft-android --target "${{ matrix.target }}"
 
+      - name: Create CI signing keystore
+        shell: bash
+        run: |
+          set -euo pipefail
+          keystore="${RUNNER_TEMP}/effectcraft-ci-release.keystore"
+          password="effectcraft-ci-${GITHUB_RUN_ID}"
+          keytool -genkeypair -v \
+            -keystore "$keystore" \
+            -storepass "$password" \
+            -keypass "$password" \
+            -alias effectcraft \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=EffectCraft CI, OU=EffectCraft, O=EffectCraft, C=US"
+          echo "CARGO_APK_RELEASE_KEYSTORE=$keystore" >> "$GITHUB_ENV"
+          echo "CARGO_APK_RELEASE_KEYSTORE_PASSWORD=$password" >> "$GITHUB_ENV"
+
       - name: Build release APK
         run: cargo apk build -p effectcraft-android --release --target "${{ matrix.target }}"
 
