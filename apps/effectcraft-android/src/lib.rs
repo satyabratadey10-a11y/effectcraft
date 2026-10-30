@@ -14,7 +14,6 @@ use effectcraft_ui_egui::EffectcraftApp;
 use eframe::{NativeOptions, egui};
 
 #[cfg(target_os = "android")]
-#[allow(unsafe_code)]
 #[unsafe(no_mangle)]
 pub fn android_main(android_app: AndroidApp) {
     effectcraft_engine::logging::install();

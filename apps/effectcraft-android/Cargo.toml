@@ -9,8 +9,11 @@ publish = false
 [lib]
 crate-type = ["cdylib"]
 
-[lints]
-workspace = true
+# Android's required `android_main` linker export uses one unsafe attribute. Keep the
+# workspace's strict lint policy for all production crates, but scope this unavoidable
+# platform boundary to this crate.
+[lints.rust]
+unsafe_code = "allow"
 
 [dependencies]
 effectcraft-engine = { workspace = true }
