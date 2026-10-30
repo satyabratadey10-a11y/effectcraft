@@ -27,9 +27,11 @@ jobs:
       matrix:
         include:
           - target: aarch64-linux-android
-            artifact: effectcraft-android-arm64-v8a
+            artifact: effectcraft-android-aarch64
+            apk_name: EffectCraft-Android-aarch64.apk
           - target: armv7-linux-androideabi
-            artifact: effectcraft-android-armeabi-v7a
+            artifact: effectcraft-android-armv7
+            apk_name: EffectCraft-Android-armv7.apk
 
     steps:
       - name: Check out source
@@ -99,10 +101,10 @@ jobs:
             exit 1
           fi
           for apk in "${apks[@]}"; do
-            cp "$apk" "target/android-artifacts/${{ matrix.artifact }}/EffectCraft-${{ matrix.target }}.apk"
+            cp "$apk" "target/android-artifacts/${{ matrix.artifact }}/${{ matrix.apk_name }}"
             break
           done
-          sha256sum "target/android-artifacts/${{ matrix.artifact }}/EffectCraft-${{ matrix.target }}.apk" \
+          sha256sum "target/android-artifacts/${{ matrix.artifact }}/${{ matrix.apk_name }}" \
             > "target/android-artifacts/${{ matrix.artifact }}/SHA256SUMS.txt"
 
       - name: Upload APK artifact

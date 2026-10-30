@@ -37,8 +37,14 @@ cargo apk build -p effectcraft-android --release --target aarch64-linux-android
 
 The `Android APK` workflow in `.github/workflows/android.yml` builds both phone ABIs:
 
-- `effectcraft-android-arm64-v8a` for current 64-bit phones;
-- `effectcraft-android-armeabi-v7a` for older 32-bit phones.
+- `effectcraft-android-aarch64` containing `EffectCraft-Android-aarch64.apk` for current
+  64-bit ARM phones;
+- `effectcraft-android-armv7` containing `EffectCraft-Android-armv7.apk` for older 32-bit phones.
+
+For a normal modern Android phone, download **`effectcraft-android-aarch64`**. The
+`aarch64-linux-android` target is Android's native 64-bit ARM target; it is not a Linux desktop
+build. The artifact download is a ZIP wrapper provided by GitHub Actions; extract it to get the
+actual `.apk` file.
 
 Run it from the repository's **Actions** tab with **Run workflow**. Download the artifact for
 your phone, enable installation from the browser/files app if Android asks, and open the APK.
