@@ -3,7 +3,7 @@ name: Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, android-apk-ci]
     paths:
       - "apps/effectcraft-android/**"
       - "crates/**"
