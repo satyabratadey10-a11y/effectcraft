@@ -12,6 +12,10 @@ The Android shell is intentionally small:
 - conservative phone defaults, with rendering and file operations still handled by the shared
   background engine.
 
+Android uses eframe's OpenGL ES/Glow presentation backend because the wgpu presentation path is
+not reliable with `android-native-activity` on a range of phone GPUs. EffectCraft's internal
+rendering remains available through its shared wgpu engine.
+
 ## Build a release APK
 
 Install the Android SDK and NDK, then install the Rust targets and `cargo-apk`:

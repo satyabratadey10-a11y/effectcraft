@@ -19,7 +19,7 @@ unsafe_code = "allow"
 effectcraft-engine = { workspace = true }
 effectcraft-host = { workspace = true }
 effectcraft-ui-egui = { workspace = true }
-eframe = { workspace = true, features = ["default_fonts", "wgpu", "clipboard", "android-native-activity"] }
+eframe = { workspace = true, features = ["default_fonts", "glow", "wgpu", "clipboard", "android-native-activity"] }
 egui = { workspace = true }
 log = { workspace = true }
 

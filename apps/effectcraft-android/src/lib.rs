@@ -11,7 +11,7 @@ use android_activity::AndroidApp;
 #[cfg(target_os = "android")]
 use effectcraft_ui_egui::EffectcraftApp;
 #[cfg(target_os = "android")]
-use eframe::{NativeOptions, egui};
+use eframe::{NativeOptions, Renderer, egui};
 
 #[cfg(target_os = "android")]
 #[unsafe(no_mangle)]
@@ -21,6 +21,7 @@ pub fn android_main(android_app: AndroidApp) {
 
     let options = NativeOptions {
         android_app: Some(android_app),
+        renderer: Renderer::Glow,
         viewport: egui::ViewportBuilder::default().with_title("EffectCraft").with_fullscreen(true).with_decorations(false),
         ..Default::default()
     };
