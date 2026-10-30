@@ -482,13 +482,13 @@ impl eframe::App for Desktop {
         }
     }
 
-    fn on_exit(&mut self) {
+    fn on_exit(&mut self, gl: Option<&eframe::glow::Context>) {
         // On macOS the app quits through `-[NSApplication terminate:]`, and the process ends
         // before `eframe::run_native` returns (#341).
         log::info!("the window is closing");
         self.launch.exited();
         self.window.save(self.app.session.config.as_deref());
-        self.app.on_exit();
+        self.app.on_exit(gl);
     }
 
     fn raw_input_hook(&mut self, ctx: &egui::Context, raw_input: &mut egui::RawInput) {

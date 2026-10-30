@@ -161,7 +161,7 @@ fn current_and_named_floating_layouts_survive_restart() {
     let saved = app.ui.dock.clone();
     app.apply_dock(Action::MoveFloating { panel: PanelKind::Project, rect: [75.0, 95.0, 480.0, 360.0] }).unwrap();
     let current = app.ui.dock.clone();
-    eframe::App::on_exit(&mut app);
+    eframe::App::on_exit(&mut app, None);
     let mut restarted = EffectcraftApp::new(Session { config: Some(store), ..Default::default() });
     assert_eq!(restarted.ui.dock, current);
     restarted.set_workspace("Default");

@@ -21,7 +21,7 @@
 <p align="center">
   A free, open-source compositor: compositions, layers,
   keyframes, 306 effects, layer styles, expressions, 3D cameras and lights, and a render queue, native on macOS,
-  Windows and Linux, and in the browser. Young, moving fast, and already usable.
+  Windows, Linux and Android, and in the browser. Young, moving fast, and already usable.
 </p>
 
 <p align="center">

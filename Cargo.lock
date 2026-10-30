@@ -1365,6 +1365,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "effectcraft-android"
+version = "0.18.0"
+dependencies = [
+ "android-activity",
+ "effectcraft-engine",
+ "effectcraft-host",
+ "effectcraft-ui-egui",
+ "eframe",
+ "egui",
+ "log",
+]
+
+[[package]]
 name = "effectcraft-automation"
 version = "0.18.0"
 dependencies = [
@@ -1902,6 +1915,7 @@ dependencies = [
  "egui-wgpu",
  "egui-winit",
  "egui_glow",
+ "glow",
  "glutin",
  "glutin-winit",
  "image",
