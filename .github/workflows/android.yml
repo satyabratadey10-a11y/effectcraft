@@ -83,8 +83,13 @@ jobs:
             -keysize 2048 \
             -validity 10000 \
             -dname "CN=EffectCraft CI, OU=EffectCraft, O=EffectCraft, C=US"
-          echo "CARGO_APK_RELEASE_KEYSTORE=$keystore" >> "$GITHUB_ENV"
-          echo "CARGO_APK_RELEASE_KEYSTORE_PASSWORD=$password" >> "$GITHUB_ENV"
+          echo "::add-mask::$password"
+          echo "EFFECTCRAFT_KEYSTORE=$keystore" >> "$GITHUB_ENV"
+          echo "EFFECTCRAFT_KEYSTORE_PASSWORD=$password" >> "$GITHUB_ENV"
+          echo "CARGO_APK_KEYSTORE_PATH=$keystore" >> "$GITHUB_ENV"
+          echo "CARGO_APK_KEYSTORE_PASSWORD=$password" >> "$GITHUB_ENV"
+          echo "CARGO_APK_KEY_ALIAS=effectcraft" >> "$GITHUB_ENV"
+          echo "CARGO_APK_KEY_PASSWORD=$password" >> "$GITHUB_ENV"
 
       - name: Build release APK
         run: cargo apk build -p effectcraft-android --release --target "${{ matrix.target }}"
@@ -101,7 +106,20 @@ jobs:
             exit 1
           fi
           for apk in "${apks[@]}"; do
-            cp "$apk" "target/android-artifacts/${{ matrix.artifact }}/${{ matrix.apk_name }}"
+            unsigned="target/android-artifacts/${{ matrix.artifact }}/unsigned.apk"
+            aligned="target/android-artifacts/${{ matrix.artifact }}/aligned.apk"
+            signed="target/android-artifacts/${{ matrix.artifact }}/${{ matrix.apk_name }}"
+            cp "$apk" "$unsigned"
+            "$ANDROID_HOME/build-tools/35.0.0/zipalign" -f -p 4 "$unsigned" "$aligned"
+            "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign \
+              --ks "$EFFECTCRAFT_KEYSTORE" \
+              --ks-key-alias effectcraft \
+              --ks-pass "pass:$EFFECTCRAFT_KEYSTORE_PASSWORD" \
+              --key-pass "pass:$EFFECTCRAFT_KEYSTORE_PASSWORD" \
+              --out "$signed" \
+              "$aligned"
+            "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$signed"
+            rm -f "$unsigned" "$aligned"
             break
           done
           sha256sum "target/android-artifacts/${{ matrix.artifact }}/${{ matrix.apk_name }}" \
