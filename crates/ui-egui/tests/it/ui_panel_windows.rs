@@ -59,7 +59,7 @@ fn panel_windows_survive_restart_with_hostile_places_made_safe() {
     invoke(&mut app, &ctx, json!({"panel": "Project", "window": true})).unwrap();
     let hostile = [90_000.0, -99_000.0, 99_000.0, 0.5];
     app.apply_dock(craft_ui::docking::Action::SetNative { panel: PanelKind::Project, rect: Some(hostile) }).unwrap();
-    eframe::App::on_exit(&mut app);
+    eframe::App::on_exit(&mut app, None);
     let restarted = EffectcraftApp::new(Session { config: Some(store), ..Default::default() });
     assert_eq!(native(&restarted, PanelKind::Project), Some(sanitized_window_rect(hostile)));
     let [x, y, w, h] = sanitized_window_rect(hostile);

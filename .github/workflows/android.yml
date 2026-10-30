@@ -84,10 +84,12 @@ jobs:
             -validity 10000 \
             -dname "CN=EffectCraft CI, OU=EffectCraft, O=EffectCraft, C=US"
           echo "::add-mask::$password"
-          echo "EFFECTCRAFT_KEYSTORE=$keystore" >> "$GITHUB_ENV"
-          echo "EFFECTCRAFT_KEYSTORE_PASSWORD=$password" >> "$GITHUB_ENV"
-          echo "CARGO_APK_RELEASE_KEYSTORE=$keystore" >> "$GITHUB_ENV"
-          echo "CARGO_APK_RELEASE_KEYSTORE_PASSWORD=$password" >> "$GITHUB_ENV"
+          {
+            echo "EFFECTCRAFT_KEYSTORE=$keystore"
+            echo "EFFECTCRAFT_KEYSTORE_PASSWORD=$password"
+            echo "CARGO_APK_RELEASE_KEYSTORE=$keystore"
+            echo "CARGO_APK_RELEASE_KEYSTORE_PASSWORD=$password"
+          } >> "$GITHUB_ENV"
 
       - name: Build release APK
         run: cargo apk build -p effectcraft-android --release --target "${{ matrix.target }}"
