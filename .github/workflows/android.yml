@@ -1,0 +1,96 @@
+name: Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "apps/effectcraft-android/**"
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/android.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    name: APK (${{ matrix.target }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: aarch64-linux-android
+            artifact: effectcraft-android-arm64-v8a
+          - target: armv7-linux-androideabi
+            artifact: effectcraft-android-armeabi-v7a
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools platforms;android-35 build-tools;35.0.0 ndk;27.2.12479018"
+
+      - name: Set Android environment
+        shell: bash
+        run: |
+          echo "ANDROID_HOME=${ANDROID_SDK_ROOT}" >> "$GITHUB_ENV"
+          echo "ANDROID_NDK_HOME=${ANDROID_SDK_ROOT}/ndk/27.2.12479018" >> "$GITHUB_ENV"
+
+      - name: Install Rust target
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          components: rustfmt
+          cache: true
+
+      - name: Install cargo-apk
+        run: cargo install cargo-apk --version 0.10.0 --locked
+
+      - name: Check Android package configuration
+        run: cargo apk check -p effectcraft-android --target "${{ matrix.target }}"
+
+      - name: Build release APK
+        run: cargo apk build -p effectcraft-android --release --target "${{ matrix.target }}"
+
+      - name: Collect APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "target/android-artifacts/${{ matrix.artifact }}"
+          mapfile -t apks < <(find target -type f -name '*.apk' -path '*/apk/*' -print)
+          if [ "${#apks[@]}" -eq 0 ]; then
+            echo "cargo-apk produced no APK files" >&2
+            find target -maxdepth 6 -type f | sort | tail -100 >&2
+            exit 1
+          fi
+          for apk in "${apks[@]}"; do
+            cp "$apk" "target/android-artifacts/${{ matrix.artifact }}/EffectCraft-${{ matrix.target }}.apk"
+            break
+          done
+          sha256sum "target/android-artifacts/${{ matrix.artifact }}/EffectCraft-${{ matrix.target }}.apk" \
+            > "target/android-artifacts/${{ matrix.artifact }}/SHA256SUMS.txt"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: target/android-artifacts/${{ matrix.artifact }}
+          if-no-files-found: error
+          retention-days: 14
