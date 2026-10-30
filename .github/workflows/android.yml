@@ -86,10 +86,8 @@ jobs:
           echo "::add-mask::$password"
           echo "EFFECTCRAFT_KEYSTORE=$keystore" >> "$GITHUB_ENV"
           echo "EFFECTCRAFT_KEYSTORE_PASSWORD=$password" >> "$GITHUB_ENV"
-          echo "CARGO_APK_KEYSTORE_PATH=$keystore" >> "$GITHUB_ENV"
-          echo "CARGO_APK_KEYSTORE_PASSWORD=$password" >> "$GITHUB_ENV"
-          echo "CARGO_APK_KEY_ALIAS=effectcraft" >> "$GITHUB_ENV"
-          echo "CARGO_APK_KEY_PASSWORD=$password" >> "$GITHUB_ENV"
+          echo "CARGO_APK_RELEASE_KEYSTORE=$keystore" >> "$GITHUB_ENV"
+          echo "CARGO_APK_RELEASE_KEYSTORE_PASSWORD=$password" >> "$GITHUB_ENV"
 
       - name: Build release APK
         run: cargo apk build -p effectcraft-android --release --target "${{ matrix.target }}"
